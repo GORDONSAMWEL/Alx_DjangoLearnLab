@@ -176,5 +176,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 
 
+# Tell Django how to determine if a request is secure (when behind a proxy)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
