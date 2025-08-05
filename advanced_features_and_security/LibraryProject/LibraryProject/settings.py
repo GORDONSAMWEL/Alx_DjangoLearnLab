@@ -144,3 +144,37 @@ CSRF_COOKIE_SECURE = True
 # Session cookie is only sent over HTTPS
 SESSION_COOKIE_SECURE = True
 
+
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+# Instruct the browser to use HTTPS for the next 1 year
+SECURE_HSTS_SECONDS = 31536000
+
+# Include subdomains in the HSTS policy
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Enable preloading of HSTS policy
+SECURE_HSTS_PRELOAD = True
+
+
+# Ensure session cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+
+# Ensure CSRF cookies are only sent over HTTPS
+CSRF_COOKIE_SECURE = True
+
+
+# Prevent browser from MIME-sniffing content type
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable the browser’s XSS filter
+SECURE_BROWSER_XSS_FILTER = True
+
+# Prevent clickjacking by disallowing your site to be framed
+X_FRAME_OPTIONS = 'DENY'
+
+
+
+
+
