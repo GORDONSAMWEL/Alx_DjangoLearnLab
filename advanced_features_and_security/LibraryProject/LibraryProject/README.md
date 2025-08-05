@@ -25,11 +25,5 @@ Permissions are declared in the `Meta` class of the `Book` model.
 
 Groups are created and configured via the Django Admin Panel.
 
-### 🔒 Permission Enforcement in Views
 
-In `bookshelf/views.py`, views are protected using `@permission_required` decorators. For example:
 
-```python
-@permission_required('bookshelf.can_edit', raise_exception=True)
-def book_edit(request, pk):
-    ...
