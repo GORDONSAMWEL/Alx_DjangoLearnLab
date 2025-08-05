@@ -1,12 +1,7 @@
 from django.db import models
-<<<<<<< HEAD
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-
-
-=======
->>>>>>> f469da5973c7afd3b81cf0a825e7ed18b2bc5fbe
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -35,7 +30,7 @@ class Librarian(models.Model):
     def __str__(self):
         return self.name
 
-<<<<<<< HEAD
+
 
 
 class CustomUserManager(BaseUserManager):
@@ -69,5 +64,4 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-=======
->>>>>>> f469da5973c7afd3b81cf0a825e7ed18b2bc5fbe
+
