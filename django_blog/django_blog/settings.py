@@ -1,4 +1,5 @@
 
+
 from pathlib import Path
 import os
 
@@ -10,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2+#dpyr*vq=u3xo74!a*xv-tq)($))jjprhcyio67s2lij&z43'
+SECRET_KEY = 'django-insecure-l&6-l992mho8k^=g^07hgfi1egld8$m6ky5z7xc(hpsw5!gtih'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "blog",
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +109,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_URL = '/media/'
