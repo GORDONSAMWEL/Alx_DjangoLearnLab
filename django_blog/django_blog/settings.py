@@ -120,4 +120,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'nozaraexpress_db',   # your database name
+        'USER': 'nozara_user',        # required (cannot be omitted)
+        'PASSWORD': 'strong_password',
+        'HOST': 'localhost',          # use '127.0.0.1' if localhost fails
+        'PORT': '5432',               # required (default PostgreSQL port)
+    }
+}
+
