@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}Home - Django Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron p-5 bg-light rounded shadow-sm text-center">
+        <h1 class="display-4">Welcome to Django Blog!</h1>
+        <p class="lead">This is your homepage. Explore posts, register, and manage your profile.</p>
+        <hr class="my-4">
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}! You can visit your <a href="{% url 'blog:profile_short' %}">profile</a>.</p>
+        {% else %}
+            <p>
+                <a class="btn btn-primary btn-lg" href="{% url 'blog:login_short' %}" role="button">Login</a>
+                <a class="btn btn-secondary btn-lg" href="{% url 'blog:register_short' %}" role="button">Register</a>
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

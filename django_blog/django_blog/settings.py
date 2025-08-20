@@ -123,14 +123,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nozaraexpress_db',   # your database name
-        'USER': 'nozara_user',        # required (cannot be omitted)
-        'PASSWORD': 'strong_password',
-        'HOST': 'localhost',          # use '127.0.0.1' if localhost fails
-        'PORT': '5432',               # required (default PostgreSQL port)
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'nozaraexpress_db',   # your database name
+#         'USER': 'nozara_user',        # required (cannot be omitted)
+#         'PASSWORD': 'strong_password',
+#         'HOST': 'localhost',          # use '127.0.0.1' if localhost fails
+#         'PORT': '5432',               # required (default PostgreSQL port)
+#     }
+# }
 
