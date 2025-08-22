@@ -169,3 +169,48 @@ def add_comment(request, post_id):
     else:
         form = CommentForm()
     return redirect(post.get_absolute_url())
+
+
+
+from django.db.models import Q
+from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
+from taggit.models import Tag
+from .models import Post
+
+class PostSearchView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '').strip()
+        qs = Post.objects.select_related('author').prefetch_related('tags').order_by('-created_at')
+        if not q:
+            return qs.none()
+        return qs.filter(
+            Q(title__icontains=q) |
+            Q(content__icontains=q) |
+            Q(tags__name__icontains=q)
+        ).distinct()
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['query'] = self.request.GET.get('q', '').strip()
+        return ctx
+
+class TaggedPostListView(ListView):
+    model = Post
+    template_name = 'blog/tagged_posts.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return (Post.objects.filter(tags__in=[self.tag])
+                .select_related('author').prefetch_related('tags')
+                .order_by('-created_at')).distinct()
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag'] = self.tag
+        return ctx
