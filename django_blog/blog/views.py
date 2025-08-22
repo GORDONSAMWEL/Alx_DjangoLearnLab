@@ -199,7 +199,7 @@ class PostSearchView(ListView):
         ctx['query'] = self.request.GET.get('q', '').strip()
         return ctx
 
-class TaggedPostListView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/tagged_posts.html'
     context_object_name = 'posts'
