@@ -9,6 +9,13 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from .serializers import LoginSerializer
 from rest_framework.permissions import AllowAny
+from rest_framework import status, permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import User
+from .serializers import UserSerializer
+
 
 from django.contrib.auth import get_user_model
 
@@ -60,3 +67,23 @@ class LoginView(APIView):
                 "token": token.key
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def follow_user(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+    request.user.follow(target_user)
+    return Response({"detail": f"You are now following {target_user.username}"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def unfollow_user(request, user_id):
+    target_user = get_object_or_404(User, id=user_id)
+    request.user.unfollow(target_user)
+    return Response({"detail": f"You unfollowed {target_user.username}"}, status=status.HTTP_200_OK)

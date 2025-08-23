@@ -2,6 +2,11 @@ from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import filters
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import permissions
+from .models import Post
+from .serializers import PostSerializer
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -31,3 +36,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def feed(request):
+    """Return posts from users the current user follows"""
+    following_users = request.user.following.all()
+    posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+    serializer = PostSerializer(posts, many=True)
+    return Response(serializer.data)
