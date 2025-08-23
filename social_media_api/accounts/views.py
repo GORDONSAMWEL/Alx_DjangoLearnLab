@@ -72,18 +72,44 @@ class LoginView(APIView):
 
 
 
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def follow_user(request, user_id):
-    target_user = get_object_or_404(User, id=user_id)
-    request.user.follow(target_user)
-    return Response({"detail": f"You are now following {target_user.username}"}, status=status.HTTP_200_OK)
+CustomUser = get_user_model()
 
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def unfollow_user(request, user_id):
-    target_user = get_object_or_404(User, id=user_id)
-    request.user.unfollow(target_user)
-    return Response({"detail": f"You unfollowed {target_user.username}"}, status=status.HTTP_200_OK)
+class FollowUserView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user_to_follow_id = kwargs.get("user_id")
+        try:
+            user_to_follow = CustomUser.objects.get(id=user_to_follow_id)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user == user_to_follow:
+            return Response({"error": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.add(user_to_follow)
+        return Response({"success": f"You are now following {user_to_follow.username}"})
+
+
+class UnfollowUserView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user_to_unfollow_id = kwargs.get("user_id")
+        try:
+            user_to_unfollow = CustomUser.objects.get(id=user_to_unfollow_id)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user == user_to_unfollow:
+            return Response({"error": "You cannot unfollow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.remove(user_to_unfollow)
+        return Response({"success": f"You have unfollowed {user_to_unfollow.username}"})
