@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'posts',
     'notifications',
-    'notification',
     
 ]
 
