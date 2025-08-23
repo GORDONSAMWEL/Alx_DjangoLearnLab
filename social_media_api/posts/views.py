@@ -38,30 +38,47 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def feed(request):
-    """Return posts from users the current user follows"""
-    following_users = request.user.following.all()
-    posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
-    serializer = PostSerializer(posts, many=True)
-    return Response(serializer.data)
+# posts/views.py
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from .models import Post, Like
+from accounts.models import Notification
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
+
         like, created = Like.objects.get_or_create(user=request.user, post=post)
+
         if not created:
             return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create notification for the post owner
+        if post.author != request.user:
+            Notification.objects.create(
+                recipient=post.author,
+                sender=request.user,
+                post=post,
+                notification_type="like"
+            )
+
         return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
 
+
 class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
+
         try:
             like = Like.objects.get(user=request.user, post=post)
             like.delete()
             return Response({"detail": "Post unliked successfully."}, status=status.HTTP_200_OK)
         except Like.DoesNotExist:
-            return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "You haven't liked this post."}, status=status.HTTP_400_BAD_REQUEST)
