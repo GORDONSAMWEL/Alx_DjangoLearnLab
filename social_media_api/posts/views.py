@@ -1,19 +1,11 @@
-from rest_framework import viewsets, permissions
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
-from rest_framework import filters
+from rest_framework import viewsets, permissions, filters, generics, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework import permissions
-from .models import Post
-from .serializers import PostSerializer
-
-from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from .models import Post, Like
-from .serializers import LikeSerializer
+
+from .models import Post, Comment, Like
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from notifications.models import Notification
 
 
@@ -44,7 +36,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
 
 
 @api_view(['GET'])
