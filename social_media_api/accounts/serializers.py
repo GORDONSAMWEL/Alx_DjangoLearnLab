@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    token = serializers.SerializerMethodField()  # 👈 get token dynamically
+    token = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -28,17 +28,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
-        token = Token.objects.create(user=user)
-        user.token = token.key  # temporarily attach token for response
         return user
 
     def to_representation(self, instance):
-        """Use UserSerializer for output"""
+        """Return user data with token"""
         return UserSerializer(instance).data
-        return user
 
 
-# login
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
