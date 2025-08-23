@@ -13,9 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i6*qg$kt%_jf8#02vpk9_np88v$g5**&n()sn+2h#197ajur_@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Set this in your env on the platform: e.g. "yourapp.onrender.com", "yourdomain.com"
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])  # better: specify domains
 
 
 # Application definition
@@ -70,12 +71,14 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# Database: use DATABASE_URL env (Postgres recommended in prod)
+# Example: postgres://USER:PASSWORD@HOST:PORT/DBNAME
+import dj_database_url
+DATABASES["default"] = dj_database_url.config(
+    default=env("DATABASE_URL"),
+    conn_max_age=600,
+    ssl_require=env.bool("DB_SSL_REQUIRE", default=True),
+)
 
 
 # Password validation
@@ -146,3 +149,21 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter'],
 }
 
+
+
+# Security hardening
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=31536000)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+# Static files (WhiteNoise for simple deployments)
+MIDDLEWARE = ["whitenoise.middleware.WhiteNoiseMiddleware", *MIDDLEWARE]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
